@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stocks</title>
+    <meta name="description" content="A stock price checker" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./public/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>
+          freeCodeCamp Project- Nasdaq Stock Price Checker
+        </h1>
+      </header>
+      <h3>Get single price and total likes</h3>
+      <form id="testForm" v-on:submit.prevent="getStockInfo">
+        <div class="field">
+          <input
+            type="text"
+            v-model="stock"
+            name="stock"
+            placeholder="goog"
+          />
+          <input type="checkbox" v-model="liked" /> Like?<br />
+        </div>
+        <p></p>
+        <button type="submit">
+          Get Price
+        </button>
+      </form>
+
+      <div id="testui">
+        <h3>Compare and get relative likes</h3>
+        <form id="testForm2" v-on:submit.prevent="getMultiStockInfo">
+          <input
+            type="text"
+            name="stock"
+            v-model="stockA"
+            placeholder="goog"
+            style="width: 100px"
+            required=""
+          />
+          <input
+            type="text"
+            name="stock"
+            v-model="stockB"
+            placeholder="msft"
+            style="width: 100px"
+            required=""
+          />
+          <input type="checkbox" v-model="liked" /> Like both?<br />
+          <p></p>
+          <button type="submit">Get Prices</button>
+        </form>
+        <p></p>
+        <code id="jsonResult">{{ result }}</code>
+      </div>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          stock: "",
+          stockA: "",
+          stockB: "",
+          liked: false,
+          result: "results wiil show here"
+        },
+        methods: {
+          getStockInfo: function() {
+          let queryString = `/api/stock-prices?stock=${this.stock}`
+          if (this.liked){
+            queryString += '&like=true'
+          }
+            axios
+              .get(queryString)
+              .then(response => {
+                this.result = JSON.stringify(response.data);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          },
+          getMultiStockInfo: function() {
+          let queryString = `/api/stock-prices?stock=${this.stockA}&stock=${this.stockB}`
+          if (this.liked){
+            queryString += '&like=true'
+          }
+            axios
+              .get(queryString)
+              .then(response => {
+                this.result = JSON.stringify(response.data);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+        }
+      });
+    </script>
+    <!--     <script src="assets/js/components.js"></script>
+    <script src="assets/js/app.js"></script> -->
+  </body>
+</html>
